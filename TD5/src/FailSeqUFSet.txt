@@ -1,0 +1,14 @@
+One big issue can happen in the union, if two threads try to do union(a,b) and union(b,a) simultaneously.
+The two execute :
+ 
+ 
+ 1: x = this.find(a);
+ 1: y = this.find(b);
+ 2: x = this.find(b);
+ 2: y = this.find(a);
+ 1: this.link(x, y); // We have x --> y --> y, OK
+ 2: this.link(x, y); // We have then y --> x but x-->y  
+ 
+Then we have an infinite loop a --> b --> a .....
+ 
+ 

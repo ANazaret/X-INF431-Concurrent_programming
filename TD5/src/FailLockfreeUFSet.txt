@@ -1,0 +1,28 @@
+ 
+ One issue can be during the find because of the path compression : 
+ 	Thread1: find(x) retrieve the ancestor x --> y --> z but meanwhile the path compression is done, z can be unionized with a (Thread 2)
+ 	we transform tree into x --> y --> z --> a ,
+ 	such that find(x) should be a not z. 
+ 	Worse, Thread2 could do find(x) quickly before Thread1 does its path compression
+ 	
+Then, the tree would be 
+
+x --> a
+y -->  a
+z --> a
+a -- > a 
+ 	
+ 	
+Yet, during the path compression with z as the supposed ancestor of x we would do 
+set x parent to z and get x ancestor .. But it is not y anymore but a !!!!
+Then we would set a ancestor to z and get previous a ancestor which was a itself and then set again a ancestor to z and stop
+
+We would end with 
+x -- > z --> a --> z
+ 
+ 
+ while (start != x)
+    start = this.parents.getAndSet(start, x);
+ return x;
+ 
+ 
